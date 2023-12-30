@@ -1,24 +1,32 @@
-service:
-  name: shopifyapp2
-# app and org for use with dashboard.serverless.com
-#app: your-app-name
-#org: your-org-name
+service: shopifyapp
+useDotenv: true
 frameworkVersion: "3"
 
 # Add the serverless-webpack plugin
 plugins:
   - serverless-webpack
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3003
 
 provider:
   name: aws
   runtime: nodejs18.x
+  region: us-east-1
+
 
 functions:
-  first:
-    handler: first.hello
-  second:
-    handler: second.hello
+  index:
+    handler: index.handler
+    environment:
+      CLIENT_ID: ${env:CLIENT_ID}
+      CLIENT_SEECRET: ${env:CLIENT_SEECRET}
+      HOSTNAME: ${env:HOSTNAME}
+      SCOPES: ${env:SCOPES}
+      DYNAMO_KEY: ${env:DYNAMO_KEY}
+      DYNAMO_SECRET: ${env:DYNAMO_SECRET}
+      TABLE_NAME: ${env:TABLE_NAME}
     events:
-      - httpApi:
-          method: get
-          path: /second
+      - httpApi: '*'

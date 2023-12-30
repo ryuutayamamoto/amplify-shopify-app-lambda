@@ -12,9 +12,14 @@
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.23.0",
     "babel-preset-env": "^1.6.0",
+    "serverless-offline": "^13.3.2",
     "serverless-webpack": "^5.3.1",
     "webpack": "^4.35.2"
   },
   "author": "The serverless webpack authors (https://github.com/elastic-coders/serverless-webpack)",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "serverless-http": "^3.2.0"
+  }
 }
