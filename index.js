@@ -1,6 +1,9 @@
 const serverless = require('serverless-http');
 const express = require('express');
 
+// lib
+const shopify = require('./lib/shopify');
+
 const app = express();
 
 app.get('/', (req, res) => {

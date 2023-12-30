@@ -1,0 +1,5 @@
+{
+  "watch": ["index.js", "shopifyApi.js"],
+  "exec": "serverless offline start",
+  "ignore": ["node_modules"]
+}
