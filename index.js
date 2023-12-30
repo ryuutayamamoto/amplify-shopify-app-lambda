@@ -5,7 +5,6 @@ const express = require('express');
 const { shopify } = require('./lib/shopify');
 const PrivacyWebhookHandlers = require('./lib/privacy');
 
-
 const REDIRECT_URI = 'https://kupy86gijk.execute-api.us-east-1.amazonaws.com/callback';
 const allowedOrigins = ['http://localhost:3003', 'https://main.d2s05i8g7qfx6c.amplifyapp.com'];
 
@@ -31,7 +30,10 @@ const app = express();
 // Set up Shopify authentication and webhook handling
 // このコードは、ShopifyのOAuth認証フローを開始するためのエンドポイントを設定しています。具体的には、shopify.config.auth.pathで指定されたパス（通常は/api/auth）にGETリクエストが来たときに、shopify.auth.begin()ミドルウェアが実行されます。
 // shopify.auth.begin()ミドルウェアは、ShopifyのOAuth認証フローを開始します。これは、ユーザーをShopifyの認証ページにリダイレクトし、そこでユーザーはアプリのインストールと必要なスコープの許可を行います。
-app.get(shopify.config.auth.path, shopify.auth.begin());
+app.get(shopify.config.auth.path, shopify.auth.begin(), (req, res) => {
+  console.log('--------- auth ---------');
+  next();
+});
 
 // このコードは、ShopifyのOAuth認証フローのコールバックエンドポイントを設定しています。具体的には、shopify.config.auth.callbackPathで指定されたパス（通常は/api/auth/callback）にGETリクエストが来たときに、shopify.auth.callback()ミドルウェアが実行されます。
 //shopify.auth.callback()ミドルウェアは、ShopifyからのOAuth認証フローのコールバックを処理します。これは、Shopifyからの認証コードを受け取り、それを使用してアクセストークンを取得します。
@@ -39,6 +41,12 @@ app.get(shopify.config.auth.path, shopify.auth.begin());
 app.get(
   shopify.config.auth.callbackPath,
   shopify.auth.callback(),
+  async (req, res, next) => {
+    const session = res.locals.shopify.session;
+    console.log('session', session);
+    // await saveShopData(session); // データを保存させる
+    next();
+  },
   shopify.redirectToShopifyOrAppRoot()
 );
 
@@ -54,15 +62,15 @@ app.use("/api/*", shopify.validateAuthenticatedSession());
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('This is the dev route!');
-});
-
-
 // このコードは、shopify.cspHeaders()ミドルウェアをExpressアプリケーションに追加しています。このミドルウェアは、Content Security Policy (CSP) ヘッダーをレスポンスに追加します。
 //CSPは、特定の種類のコンテンツがどこから読み込まれるべきかをブラウザに指示するセキュリティ機能です。これにより、クロスサイトスクリプティング（XSS）攻撃などの一部の種類の攻撃を防ぐことができます。
 app.use(shopify.cspHeaders());
 
+// Shopifyがショップにインストールされていることを確認
+// フロント側のビルドファイルを送信
+app.get('/', shopify.ensureInstalledOnShop(), (req, res) => {
+  res.send('Hello world!');
+});
 
 const handler = serverless(app);
 
