@@ -3,7 +3,7 @@ const express = require('express');
 
 // lib
 const { shopify } = require('./lib/shopify');
-const PrivacyWebhookHandlers = require('./lib/privacy');
+const { PrivacyWebhookHandlers } = require('./lib/privacy');
 
 const REDIRECT_URI = 'https://kupy86gijk.execute-api.us-east-1.amazonaws.com/callback';
 const allowedOrigins = ['http://localhost:3003', 'https://main.d2s05i8g7qfx6c.amplifyapp.com'];
