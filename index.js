@@ -3,6 +3,7 @@ const express = require('express');
 
 // lib
 const shopify = require('./lib/shopify');
+const PrivacyWebhookHandlers = require('./lib/privacy');
 
 const app = express();
 
