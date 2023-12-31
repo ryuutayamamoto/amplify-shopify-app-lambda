@@ -55,12 +55,27 @@ app.use(express.json());
 
 // このコードは、shopify.cspHeaders()ミドルウェアをExpressアプリケーションに追加しています。このミドルウェアは、Content Security Policy (CSP) ヘッダーをレスポンスに追加します。
 //CSPは、特定の種類のコンテンツがどこから読み込まれるべきかをブラウザに指示するセキュリティ機能です。これにより、クロスサイトスクリプティング（XSS）攻撃などの一部の種類の攻撃を防ぐことができます。
-app.use(shopify.cspHeaders());
+// app.use(shopify.cspHeaders());
 
 // Shopifyがショップにインストールされていることを確認
 // フロント側のビルドファイルを送信
-app.get('/', shopify.ensureInstalledOnShop(), (req, res) => {
+// app.get('/', shopify.ensureInstalledOnShop(), (req, res) => {
+//   res.send('Hello world!');
+// });
+
+app.get('/', async (req, res) => {
   res.send('Hello world!');
+});
+
+app.get('/install', shopify.ensureInstalledOnShop());
+app.get('/shop_exist', async (req, res) => {
+  if(!req.query.shop) {
+    res.status(400).send('Missing shop parameter. Please add ?shop=your-development-shop.myshopify.com to your request');
+    return;
+  }
+
+  const session = await dynamodb.findSessionsByShop(req.query.shop);
+  res.status(200).send(session.length > 0);
 });
 
 const handler = serverless(app);
