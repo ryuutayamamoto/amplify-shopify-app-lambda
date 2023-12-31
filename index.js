@@ -30,10 +30,7 @@ const app = express();
 // Set up Shopify authentication and webhook handling
 // このコードは、ShopifyのOAuth認証フローを開始するためのエンドポイントを設定しています。具体的には、shopify.config.auth.pathで指定されたパス（通常は/api/auth）にGETリクエストが来たときに、shopify.auth.begin()ミドルウェアが実行されます。
 // shopify.auth.begin()ミドルウェアは、ShopifyのOAuth認証フローを開始します。これは、ユーザーをShopifyの認証ページにリダイレクトし、そこでユーザーはアプリのインストールと必要なスコープの許可を行います。
-app.get(shopify.config.auth.path, (req, res) => {
-  console.log('--------- auth ---------');
-  next();
-}, shopify.auth.begin());
+app.get(shopify.config.auth.path, shopify.auth.begin());
 
 // このコードは、ShopifyのOAuth認証フローのコールバックエンドポイントを設定しています。具体的には、shopify.config.auth.callbackPathで指定されたパス（通常は/api/auth/callback）にGETリクエストが来たときに、shopify.auth.callback()ミドルウェアが実行されます。
 //shopify.auth.callback()ミドルウェアは、ShopifyからのOAuth認証フローのコールバックを処理します。これは、Shopifyからの認証コードを受け取り、それを使用してアクセストークンを取得します。
@@ -41,16 +38,6 @@ app.get(shopify.config.auth.path, (req, res) => {
 app.get(
   shopify.config.auth.callbackPath,
   shopify.auth.callback(),
-  async (req, res, next) => {
-    const session = res.locals.shopify.session;
-    // console.log('session', session);
-
-    // セッションを保存
-    const response = await dynamodb.storeSession(session);
-
-    console.log('----------- DB seaved response -----------', response);
-    next();
-  },
   shopify.redirectToShopifyOrAppRoot()
 );
 
