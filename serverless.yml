@@ -22,7 +22,7 @@ functions:
     handler: index.handler
     environment:
       CLIENT_ID: ${env:CLIENT_ID}
-      CLIENT_SEECRET: ${env:CLIENT_SEECRET}
+      CLIENT_SECRET: ${env:CLIENT_SECRET}
       HOSTNAME: ${env:HOSTNAME}
       SCOPES: ${env:SCOPES}
       DYNAMO_KEY: ${env:DYNAMO_KEY}
