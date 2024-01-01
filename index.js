@@ -6,24 +6,24 @@ const { shopify, dynamodb } = require('./lib/shopify');
 const { PrivacyWebhookHandlers } = require('./lib/privacy');
 
 const REDIRECT_URI = 'https://kupy86gijk.execute-api.us-east-1.amazonaws.com/callback';
-const allowedOrigins = ['http://localhost:3003', 'https://main.d2s05i8g7qfx6c.amplifyapp.com'];
+const allowedOrigins = ['http://localhost:3000', 'https://main.d2s05i8g7qfx6c.amplifyapp.com'];
 
 const app = express();
 
 
 // クロスオリジン対応
-// app.use((req, res, next) => {
-//   const origin = req.headers.origin;
-//   if (allowedOrigins.includes(origin)) {
-//     res.header('Access-Control-Allow-Origin', origin);
-//   }
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
 
-//   // Other CORS headers you might want to set
-//   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  // Other CORS headers you might want to set
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 
-//   next();  // Call next() to pass control to the next middleware function.
-// });
+  next();  // Call next() to pass control to the next middleware function.
+});
 
 
 
