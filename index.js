@@ -63,11 +63,29 @@ app.use(express.json());
 //   res.send('Hello world!');
 // });
 
-app.get('/', async (req, res) => {
-  res.send('Hello world!');
-});
+app.get('/', async (req, res, next) => {
+  if(!req.query.shop) {
+    res.status(400).send('Missing shop parameter. Please add ?shop=your-development-shop.myshopify.com to your request');
+    return;
+  }
+
+  try {
+    const session = await dynamodb.findSessionsByShop(req.query.shop);
+
+    if(session.length > 0) {
+      res.send('Hello world!');
+    } else {
+      next();
+    }
+  } catch (e) {
+    // セッションのデータを取得できなかった場合
+    console.error(`not found session data: ${e}`);
+    res.status(400).send(`not found session data: ${e}`);
+  }
+}, shopify.ensureInstalledOnShop());
 
 app.get('/install', shopify.ensureInstalledOnShop());
+
 app.get('/shop_exist', async (req, res) => {
   if(!req.query.shop) {
     res.status(400).send('Missing shop parameter. Please add ?shop=your-development-shop.myshopify.com to your request');
