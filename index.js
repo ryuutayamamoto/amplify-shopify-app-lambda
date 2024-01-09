@@ -5,7 +5,7 @@ const express = require('express');
 const { shopify, dynamodb } = require('./lib/shopify');
 const { PrivacyWebhookHandlers } = require('./lib/privacy');
 const { authCallback } = require('./lib/customCallback/callback');
-const { callbackComp } = require('./lib/customCallback/apiAuthCallback');
+// const { callbackComp } = require('./lib/customCallback/apiAuthCallback');
 
 const REDIRECT_URI = 'https://kupy86gijk.execute-api.us-east-1.amazonaws.com/callback';
 const allowedOrigins = ['http://localhost:3000', 'https://main.d2s05i8g7qfx6c.amplifyapp.com'];
