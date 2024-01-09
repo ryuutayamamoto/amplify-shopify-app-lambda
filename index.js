@@ -4,8 +4,6 @@ const express = require('express');
 // lib
 const { shopify, dynamodb } = require('./lib/shopify');
 const { PrivacyWebhookHandlers } = require('./lib/privacy');
-const { authCallback } = require('./lib/customCallback/callback');
-// const { callbackComp } = require('./lib/customCallback/apiAuthCallback');
 
 const REDIRECT_URI = 'https://kupy86gijk.execute-api.us-east-1.amazonaws.com/callback';
 const allowedOrigins = ['http://localhost:3000', 'https://main.d2s05i8g7qfx6c.amplifyapp.com'];
@@ -39,7 +37,7 @@ app.get(shopify.config.auth.path, shopify.auth.begin());
 // その後、shopify.redirectToShopifyOrAppRoot()ミドルウェアが実行されます。これは、ユーザーをShopify管理画面またはアプリのルートパスにリダイレクトします。
 app.get(
   shopify.config.auth.callbackPath,
-  authCallback(),
+  shopify.auth.callback(),
   shopify.redirectToShopifyOrAppRoot()
 );
 
